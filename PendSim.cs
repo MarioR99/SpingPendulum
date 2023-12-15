@@ -12,7 +12,8 @@ public class PendSim : Simulator
     double Fs;    
     double Ke;
     double Pe;
-    double Delta;    
+    double Delta; 
+    double Lf;    
     public PendSim() : base(6)
     {
 
@@ -35,8 +36,8 @@ public class PendSim : Simulator
     {
     double Lf = Math.Sqrt(xx[0] * xx[0] + xx[2] * xx[2] + xx[4] * xx[4]);
     double Fs = k * (L-Lf);
-    double Velocity = Math.Sqrt(xx[1] * xx[1] + xx[3] * xx[3] + xx[5] * xx[5]);
-    double Delta = Lf - L;
+    //double Velocity = Math.Sqrt(xx[1] * xx[1] + xx[3] * xx[3] + xx[5] * xx[5]);
+    //double Delta = Lf - L;
 
     ff[0] = xx[1];
     ff[1] = (xx[0] * Fs) / (m * Lf);
@@ -45,8 +46,7 @@ public class PendSim : Simulator
     ff[4] = xx[5];
     ff[5] = (xx[4] * Fs) / (m * Lf);
 
-    Pe = 0.5*m * Velocity * Velocity;
-    Ke = 0.5*k * Delta * Delta + m * g * xx[2];
+    
     }
 
     //--------------------------------------------------------------------
@@ -111,14 +111,20 @@ public class PendSim : Simulator
 
    public double Kinetic
     {
-        get { return Ke; }
+        get { Lf = Math.Sqrt(x[0] * x[0] + x[2] * x[2] + x[4] * x[4]);
+            Delta = Lf - L;
+            Ke = 0.5*k * Delta * Delta + m * g * x[2];
+            return Ke; }
         set { Ke = value; }
     }
 
     public double Potential
     {
-        get { return Pe; }
+        get { double Velocity = Math.Sqrt(x[1] * x[1] + x[3] * x[3] + x[5] * x[5]);
+            Pe = 0.5*m * Velocity * Velocity;
+            return Pe; }
         set { Pe = value; }
+
     }
 
     public double SpringForce
